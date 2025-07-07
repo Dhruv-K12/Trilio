@@ -13,11 +13,31 @@ import { fonts } from "../../constants/fonts";
 import { ms } from "react-native-size-matters";
 import Input from "../../components/Input";
 import AuthBtn from "../../components/AuthBtn";
+import { validateAuth } from "../../utils/validateAuth";
+import { useAuthCtx } from "../../context/AuthContext";
+import Alert from "../../components/Alert";
 
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const { setAlertConfig, setLoading } = useAuthCtx();
+  const validateName = () => {
+    if (name.trim().length !== 0) {
+      validateAuth(
+        email,
+        pass,
+        setAlertConfig,
+        setLoading,
+        name
+      );
+    } else {
+      setAlertConfig({
+        alert: true,
+        error: "Your name is empty",
+      });
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Image
@@ -49,10 +69,11 @@ const SignUp = () => {
         placeholder="Enter Your Password Here"
       />
       <AuthBtn
-        onPress={() => {}}
+        onPress={validateName}
         backgroundColor={colors.rarely}
         text="Signup"
       />
+      <Alert />
     </SafeAreaView>
   );
 };

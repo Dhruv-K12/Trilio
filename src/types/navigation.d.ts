@@ -3,3 +3,7 @@ export type routeAuthStackParamList = {
   Login: undefined;
   Signup: undefined;
 };
+
+export type routeMainStackParamList = {
+  Home: undefined;
+};

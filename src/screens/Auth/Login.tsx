@@ -13,10 +13,14 @@ import { colors } from "../../constants/colors";
 import { fonts } from "../../constants/fonts";
 import { ms } from "react-native-size-matters";
 import AuthBtn from "../../components/AuthBtn";
+import { validateAuth } from "../../utils/validateAuth";
+import Alert from "../../components/Alert";
+import { useAuthCtx } from "../../context/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const { setAlertConfig, setLoading } = useAuthCtx();
   return (
     <SafeAreaView style={styles.container}>
       <Image
@@ -41,10 +45,18 @@ const Login = () => {
         value={pass}
       />
       <AuthBtn
-        onPress={() => {}}
+        onPress={() =>
+          validateAuth(
+            email,
+            pass,
+            setAlertConfig,
+            setLoading
+          )
+        }
         backgroundColor={colors.primary}
         text="Login"
       />
+      <Alert />
     </SafeAreaView>
   );
 };

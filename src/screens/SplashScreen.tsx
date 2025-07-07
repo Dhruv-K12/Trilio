@@ -9,7 +9,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 import LottieView from "lottie-react-native";
 
-const SplashScreen = () => {
+const SplashScreens = ({
+  setLoading,
+}: {
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   return (
     <View style={styles.container}>
       <LottieView
@@ -17,12 +21,13 @@ const SplashScreen = () => {
         style={styles.logo}
         autoPlay
         loop={false}
+        onAnimationFinish={() => setLoading(false)}
       />
     </View>
   );
 };
 
-export default SplashScreen;
+export default SplashScreens;
 
 const styles = StyleSheet.create({
   container: {
