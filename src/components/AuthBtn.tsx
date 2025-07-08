@@ -16,6 +16,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useMainCtx } from "../context/MainContext";
 const AuthBtn = ({
   onPress,
   color,
@@ -23,10 +24,10 @@ const AuthBtn = ({
   text,
 }: buttonProps) => {
   const { loading } = useAuthCtx();
+  const { TouchableAnimated } = useMainCtx();
   const progress = useSharedValue(0);
   const width = useWindowDimensions().width;
-  const TouchableAnimated =
-    Animated.createAnimatedComponent(TouchableOpacity);
+
   useEffect(() => {
     if (loading) {
       progress.value = withSpring(1);

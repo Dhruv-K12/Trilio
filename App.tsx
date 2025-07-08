@@ -9,13 +9,17 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import AuthStack from "./src/navigation/AuthStack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { AuthCtxProvider } from "./src/context/AuthContext";
+import {
+  AuthCtxProvider,
+  useAuthCtx,
+} from "./src/context/AuthContext";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 import MainStack from "./src/navigation/MainStack";
 import * as SplashScreen from "expo-splash-screen";
 import SplashScreens from "./src/screens/SplashScreen";
+import { MainCtxProvider } from "./src/context/MainContext";
 SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [user, setUser] = useState<User>();
@@ -49,11 +53,17 @@ export default function App() {
   }
   return (
     <AuthCtxProvider>
-      <SafeAreaProvider style={{ flex: 1 }}>
-        <NavigationContainer>
-          {user ? <MainStack /> : <AuthStack />}
-        </NavigationContainer>
-      </SafeAreaProvider>
+      <MainCtxProvider>
+        <SafeAreaProvider style={{ flex: 1 }}>
+          <NavigationContainer>
+            {user ? (
+              <MainStack user={user} />
+            ) : (
+              <AuthStack />
+            )}
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </MainCtxProvider>
     </AuthCtxProvider>
   );
 }

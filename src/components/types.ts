@@ -9,3 +9,9 @@ export type inputProps = {
   value: string;
   onChangeText: (val: string) => void;
 };
+export type swibeableBtnProps = {
+  choose: "All" | "Favourites";
+  setChoose: React.Dispatch<
+    React.SetStateAction<"All" | "Favourites">
+  >;
+};
