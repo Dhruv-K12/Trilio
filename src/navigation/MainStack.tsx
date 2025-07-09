@@ -5,6 +5,8 @@ import Home from "../screens/Main/Home";
 import { routeMainStackParamList } from "../types/navigation";
 import { User } from "firebase/auth";
 import { useAuthCtx } from "../context/AuthContext";
+import CreateServer from "../screens/Main/CreateServer";
+import JoinServer from "../screens/Main/JoinServer";
 
 const Stack =
   createNativeStackNavigator<routeMainStackParamList>();
@@ -16,6 +18,14 @@ const MainStack = ({ user }: { user: User }) => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen
+        name="CreateServer"
+        component={CreateServer}
+      />
+      <Stack.Screen
+        name="JoinServer"
+        component={JoinServer}
+      />
     </Stack.Navigator>
   );
 };

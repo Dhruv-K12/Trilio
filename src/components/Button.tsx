@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     margin: 8,
+    alignSelf: "center",
   },
   text: {
     color: colors.secondary,

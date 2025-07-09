@@ -14,14 +14,17 @@ import { ms } from "react-native-size-matters";
 import SwipeableBtn from "../../components/SwipeableBtn";
 import { useAuthCtx } from "../../context/AuthContext";
 import ChatFloatingBtn from "../../components/ChatFloatingBtn";
+import { useNavigation } from "@react-navigation/native";
+
+import {
+  naviagationProp,
+  routeMainStackParamList,
+} from "../../types/navigation";
 const Home = () => {
   const [option, setOptions] = useState<
     "All" | "Favourites"
   >("All");
   const name = useAuthCtx().userCredential?.displayName;
-  const formattedName = name
-    ? name.charAt(0).toUpperCase() + name.slice(1)
-    : "Sir";
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -30,7 +33,7 @@ const Home = () => {
             Hello,
           </Text>
           <Text style={[styles.headerTxt, styles.nameTxt]}>
-            {formattedName}
+            {name}
           </Text>
         </View>
         <View style={styles.btnContainer}>

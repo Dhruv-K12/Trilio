@@ -1,3 +1,5 @@
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 export type routeAuthStackParamList = {
   Introduction: undefined;
   Login: undefined;
@@ -6,4 +8,9 @@ export type routeAuthStackParamList = {
 
 export type routeMainStackParamList = {
   Home: undefined;
+  CreateServer: undefined;
+  JoinServer: undefined;
 };
+
+export type naviagationProp =
+  NativeStackNavigationProp<routeMainStackParamList>;

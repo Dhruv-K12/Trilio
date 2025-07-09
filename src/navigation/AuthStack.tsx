@@ -4,6 +4,8 @@ import Introduction from "../screens/Auth/Introduction";
 import Login from "../screens/Auth/Login";
 import SignUp from "../screens/Auth/SignUp";
 import { routeAuthStackParamList } from "../types/navigation";
+import { useAuthCtx } from "../context/AuthContext";
+import Alert from "../components/Alert";
 
 const Stack =
   createNativeStackNavigator<routeAuthStackParamList>();

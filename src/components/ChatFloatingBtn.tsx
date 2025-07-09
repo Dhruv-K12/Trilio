@@ -11,15 +11,17 @@ import { useMainCtx } from "../context/MainContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { fonts } from "../constants/fonts";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { useNavigation } from "@react-navigation/native";
+import { naviagationProp } from "../types/navigation";
 
 const ChatFloatingBtn = () => {
+  const navigation = useNavigation<naviagationProp>();
   const { TouchableAnimated } = useMainCtx();
   const optionAnimated = useSharedValue(0);
   const optionStyle = useAnimatedStyle(() => {
@@ -70,7 +72,12 @@ const ChatFloatingBtn = () => {
         style={[styles.optionContainer, optionStyle]}
       >
         <Text style={styles.optionTxt}>Create server</Text>
-        <TouchableOpacity style={styles.optionsBtn}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("CreateServer")
+          }
+          style={styles.optionsBtn}
+        >
           <MaterialIcons
             name="create"
             size={24}
@@ -82,7 +89,10 @@ const ChatFloatingBtn = () => {
         style={[styles.optionContainer, optionStyle]}
       >
         <Text style={styles.optionTxt}>Join server</Text>
-        <TouchableOpacity style={styles.optionsBtn}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("JoinServer")}
+          style={styles.optionsBtn}
+        >
           <FontAwesome
             name="group"
             size={24}

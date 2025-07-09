@@ -21,7 +21,11 @@ const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
-  const { setAlertConfig, setLoading } = useAuthCtx();
+  const { setAlertConfig, setLoading, alertConfig } =
+    useAuthCtx();
+  if (alertConfig.alert) {
+    return <Alert />;
+  }
   const validateName = () => {
     if (name.trim().length !== 0) {
       validateAuth(
@@ -73,7 +77,6 @@ const SignUp = () => {
         backgroundColor={colors.rarely}
         text="Signup"
       />
-      <Alert />
     </SafeAreaView>
   );
 };

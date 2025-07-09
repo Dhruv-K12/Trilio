@@ -23,9 +23,12 @@ const signUpHandler = async (
       email,
       password
     );
-    updateProfile(response.user, {
-      displayName: name,
+    const formattedName =
+      name.charAt(0).toUpperCase() + name.slice(1);
+    await updateProfile(response.user, {
+      displayName: formattedName,
     });
+    setLoading(false);
   } catch (e: any) {
     if (e.code === "auth/email-already-in-use") {
       setAlertConfig({
@@ -33,8 +36,8 @@ const signUpHandler = async (
         error: "This email is already in use",
       });
     }
+    setLoading(false);
   }
-  setLoading(false);
 };
 const loginHandler = async (
   email: string,
@@ -46,14 +49,16 @@ const loginHandler = async (
 ) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
+    setLoading(false);
   } catch (e: any) {
-    if (e.code === "auth/invalid-credential")
+    if (e.code === "auth/invalid-credential") {
       setAlertConfig({
         alert: true,
         error: "Your email or password is incorrect",
       });
+    }
+    setLoading(false);
   }
-  setLoading(false);
 };
 
 export { signUpHandler, loginHandler };

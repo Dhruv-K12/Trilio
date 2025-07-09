@@ -19,11 +19,7 @@ const Alert = () => {
     });
   };
   return (
-    <Modal
-      transparent
-      visible={alertConfig.alert}
-      style={{ flex: 1 }}
-    >
+    <Modal visible={alertConfig.alert} style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.alertBox}>
           <View style={styles.headerContainer}>
@@ -56,6 +52,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: colors.background,
   },
   alertBox: {
     width: "90%",
@@ -63,7 +60,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.rarely,
     borderRadius: 20,
     padding: 8,
-    elevation: 8,
     shadowColor: "white",
   },
   headerContainer: {

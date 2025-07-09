@@ -20,7 +20,11 @@ import { useAuthCtx } from "../../context/AuthContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
-  const { setAlertConfig, setLoading } = useAuthCtx();
+  const { setAlertConfig, setLoading, alertConfig } =
+    useAuthCtx();
+  if (alertConfig.alert) {
+    return <Alert />;
+  }
   return (
     <SafeAreaView style={styles.container}>
       <Image
@@ -56,7 +60,6 @@ const Login = () => {
         backgroundColor={colors.primary}
         text="Login"
       />
-      <Alert />
     </SafeAreaView>
   );
 };

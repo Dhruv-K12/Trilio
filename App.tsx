@@ -20,6 +20,7 @@ import MainStack from "./src/navigation/MainStack";
 import * as SplashScreen from "expo-splash-screen";
 import SplashScreens from "./src/screens/SplashScreen";
 import { MainCtxProvider } from "./src/context/MainContext";
+import Alert from "./src/components/Alert";
 SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [user, setUser] = useState<User>();

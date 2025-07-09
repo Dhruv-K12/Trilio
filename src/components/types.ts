@@ -15,3 +15,10 @@ export type swibeableBtnProps = {
     React.SetStateAction<"All" | "Favourites">
   >;
 };
+export type labelInputProps = {
+  value: string;
+  onChangeText: (val: string) => void;
+  title: string;
+  multiline?: boolean;
+  length: number;
+};
