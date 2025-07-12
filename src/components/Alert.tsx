@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import React, { useEffect } from "react";
@@ -11,6 +12,7 @@ import { colors } from "../constants/colors";
 import Foundation from "@expo/vector-icons/Foundation";
 import { fonts } from "../constants/fonts";
 const Alert = () => {
+  const height = useWindowDimensions().height;
   const { alertConfig, setAlertConfig } = useAuthCtx();
   const resetAlertConfig = () => {
     setAlertConfig({
@@ -19,27 +21,34 @@ const Alert = () => {
     });
   };
   return (
-    <Modal visible={alertConfig.alert} style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <View style={styles.alertBox}>
-          <View style={styles.headerContainer}>
-            <Foundation
-              name="alert"
-              size={40}
-              color={colors.primary}
-            />
-            <Text style={styles.header}>Alert</Text>
-          </View>
-          <Text style={styles.description}>
-            {alertConfig.error}
-          </Text>
-          <TouchableOpacity
-            onPress={resetAlertConfig}
-            style={styles.alertBtn}
-          >
-            <Text style={styles.header}>ok</Text>
-          </TouchableOpacity>
+    <Modal
+      visible={alertConfig.alert}
+      transparent
+      style={styles.container}
+    >
+      <View
+        style={[
+          styles.alertBox,
+          { margin: height / 2 - 100 },
+        ]}
+      >
+        <View style={styles.headerContainer}>
+          <Foundation
+            name="alert"
+            size={40}
+            color={colors.primary}
+          />
+          <Text style={styles.header}>Alert</Text>
         </View>
+        <Text style={styles.description}>
+          {alertConfig.error}
+        </Text>
+        <TouchableOpacity
+          onPress={resetAlertConfig}
+          style={styles.alertBtn}
+        >
+          <Text style={styles.header}>ok</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
@@ -49,10 +58,10 @@ export default Alert;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.background,
+    flex: 1,
   },
   alertBox: {
     width: "90%",
@@ -61,6 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 8,
     shadowColor: "white",
+    alignSelf: "center",
   },
   headerContainer: {
     flexDirection: "row",

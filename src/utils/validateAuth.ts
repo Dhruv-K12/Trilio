@@ -1,4 +1,4 @@
-import { loginHandler, signUpHandler } from "../auth/auth";
+import { loginHandler, signUpHandler } from "../api/auth";
 import { alertConfigType } from "../types/types";
 
 export const validateAuth = (

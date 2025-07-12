@@ -1,20 +1,15 @@
-import { Role, StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import { StyleSheet } from "react-native";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../screens/Main/Home";
 import { routeMainStackParamList } from "../types/navigation";
-import { User } from "firebase/auth";
-import { useAuthCtx } from "../context/AuthContext";
 import CreateServer from "../screens/Main/CreateServer";
 import JoinServer from "../screens/Main/JoinServer";
+import ChatScreen from "../screens/Main/ChatScreen";
 
 const Stack =
   createNativeStackNavigator<routeMainStackParamList>();
-const MainStack = ({ user }: { user: User }) => {
-  const { setUserCredential } = useAuthCtx();
-  useEffect(() => {
-    setUserCredential(user);
-  }, []);
+const MainStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={Home} />
@@ -25,6 +20,10 @@ const MainStack = ({ user }: { user: User }) => {
       <Stack.Screen
         name="JoinServer"
         component={JoinServer}
+      />
+      <Stack.Screen
+        name="ChatScreen"
+        component={ChatScreen}
       />
     </Stack.Navigator>
   );

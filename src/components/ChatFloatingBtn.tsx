@@ -117,18 +117,19 @@ export default ChatFloatingBtn;
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 12,
+    position: "absolute",
+    right: 1,
+    bottom: 10,
   },
   floatBtn: {
     width: 60,
     height: 60,
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: colors.secondary,
     borderRadius: 30,
     alignSelf: "flex-end",
+    margin: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   optionContainer: {
     flexDirection: "row",

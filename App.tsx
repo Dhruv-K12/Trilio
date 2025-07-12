@@ -1,30 +1,14 @@
-import { StatusBar } from "expo-status-bar";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import AuthStack from "./src/navigation/AuthStack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import {
-  AuthCtxProvider,
-  useAuthCtx,
-} from "./src/context/AuthContext";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "./firebaseConfig";
-import MainStack from "./src/navigation/MainStack";
-import * as SplashScreen from "expo-splash-screen";
-import SplashScreens from "./src/screens/SplashScreen";
+import { AuthCtxProvider } from "./src/context/AuthContext";
 import { MainCtxProvider } from "./src/context/MainContext";
+import MainNavigation from "./src/navigation/MainNavigation";
 import Alert from "./src/components/Alert";
-SplashScreen.preventAutoHideAsync();
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 export default function App() {
-  const [user, setUser] = useState<User>();
-  const [loading, setLoading] = useState(true);
   const [loaded, error] = useFonts({
     "Inria-Bold": require("./assets/Fonts/InriaSerif-Bold.ttf"),
     "Inria-BoldItalic": require("./assets/Fonts/InriaSerif-BoldItalic.ttf"),
@@ -35,45 +19,21 @@ export default function App() {
     "Inter-Light": require("./assets/Fonts/Inter_18pt-Light.ttf"),
     "Inter-Thin": require("./assets/Fonts/Inter_18pt-Thin.ttf"),
   });
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      }
-      SplashScreen.hideAsync();
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, []);
   if (!loaded && !error) {
     return null;
   }
-  if (loading) {
-    return <SplashScreens setLoading={setLoading} />;
-  }
+
   return (
-    <AuthCtxProvider>
-      <MainCtxProvider>
-        <SafeAreaProvider style={{ flex: 1 }}>
-          <NavigationContainer>
-            {user ? (
-              <MainStack user={user} />
-            ) : (
-              <AuthStack />
-            )}
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </MainCtxProvider>
-    </AuthCtxProvider>
+    <GestureHandlerRootView>
+      <AuthCtxProvider>
+        <MainCtxProvider>
+          <SafeAreaProvider style={{ flex: 1 }}>
+            <NavigationContainer>
+              <MainNavigation />
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </MainCtxProvider>
+      </AuthCtxProvider>
+    </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

@@ -1,10 +1,11 @@
 import {
+  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { colors } from "../../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fonts } from "../../constants/fonts";
@@ -14,17 +15,16 @@ import { ms } from "react-native-size-matters";
 import SwipeableBtn from "../../components/SwipeableBtn";
 import { useAuthCtx } from "../../context/AuthContext";
 import ChatFloatingBtn from "../../components/ChatFloatingBtn";
-import { useNavigation } from "@react-navigation/native";
-
-import {
-  naviagationProp,
-  routeMainStackParamList,
-} from "../../types/navigation";
+import Servers from "../../components/Servers";
+import { useMainCtx } from "../../context/MainContext";
+import Feather from "@expo/vector-icons/Feather";
 const Home = () => {
   const [option, setOptions] = useState<
     "All" | "Favourites"
   >("All");
-  const name = useAuthCtx().userCredential?.displayName;
+  const { user } = useAuthCtx();
+  const { servers } = useMainCtx();
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -33,7 +33,7 @@ const Home = () => {
             Hello,
           </Text>
           <Text style={[styles.headerTxt, styles.nameTxt]}>
-            {name}
+            {user?.displayName}
           </Text>
         </View>
         <View style={styles.btnContainer}>
@@ -44,10 +44,10 @@ const Home = () => {
               color={colors.secondary}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <MaterialCommunityIcons
-              name="dots-vertical-circle-outline"
-              size={38}
+          <TouchableOpacity style={styles.settingContainer}>
+            <Ionicons
+              name="settings-outline"
+              size={24}
               color={colors.secondary}
             />
           </TouchableOpacity>
@@ -57,7 +57,17 @@ const Home = () => {
         choose={option}
         setChoose={setOptions}
       />
-      <View style={styles.containerFloatingBtn}></View>
+      <FlatList
+        data={servers}
+        renderItem={({ item }) => (
+          <Servers
+            uri={item.url}
+            title={item.name}
+            des={item.des}
+            code={item.code}
+          />
+        )}
+      />
       <ChatFloatingBtn />
     </SafeAreaView>
   );
@@ -92,5 +102,15 @@ const styles = StyleSheet.create({
   containerFloatingBtn: {
     flex: 0.9,
     justifyContent: "flex-end",
+  },
+  settingContainer: {
+    width: 30,
+    height: 30,
+    borderWidth: 2,
+    borderRadius: 15,
+    alignSelf: "center",
+    borderColor: colors.secondary,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

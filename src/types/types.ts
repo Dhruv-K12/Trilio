@@ -13,8 +13,8 @@ export type authCtxType = {
   >;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  userCredential: User | undefined;
-  setUserCredential: React.Dispatch<
+  user: User | undefined;
+  setUser: React.Dispatch<
     React.SetStateAction<User | undefined>
   >;
 };
@@ -24,4 +24,6 @@ export type mainCtxType = {
       TouchableOpacityProps & React.RefAttributes<View>
     >
   >;
+  servers: any[];
+  setServers: React.Dispatch<React.SetStateAction<any[]>>;
 };

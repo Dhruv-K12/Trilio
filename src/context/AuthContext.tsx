@@ -12,16 +12,15 @@ export const AuthCtxProvider = ({
     alert: false,
     error: "",
   });
-  const [userCredential, setUserCredential] =
-    useState<User>();
+  const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(false);
   const value = {
     alertConfig,
     setAlertConfig,
     loading,
     setLoading,
-    userCredential,
-    setUserCredential,
+    user,
+    setUser,
   };
   return (
     <authCtx.Provider value={value}>

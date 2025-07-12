@@ -4,10 +4,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
-import {
-  alertConfigType,
-  authCtxType,
-} from "../types/types";
+import { alertConfigType } from "../types/types";
 const signUpHandler = async (
   email: string,
   password: string,

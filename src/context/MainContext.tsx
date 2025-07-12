@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import Animated from "react-native-reanimated";
 import { mainCtxType } from "../types/types";
@@ -12,8 +12,11 @@ export const MainCtxProvider = ({
 }) => {
   const TouchableAnimated =
     Animated.createAnimatedComponent(TouchableOpacity);
+  const [servers, setServers] = useState<string[]>([]);
   const value = {
     TouchableAnimated,
+    servers,
+    setServers,
   };
   return (
     <mainCtx.Provider value={value}>

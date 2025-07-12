@@ -57,6 +57,7 @@ const AuthBtn = ({
         container,
       ]}
       onPress={onPress}
+      disabled={loading}
     >
       {loading ? (
         <ActivityIndicator
@@ -80,6 +81,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     margin: 10,
+    alignSelf: "center",
   },
   buttonText: {
     fontFamily: fonts.InriaBold,

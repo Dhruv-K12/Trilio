@@ -1,0 +1,71 @@
+import {
+  doc,
+  getDoc,
+  getDocs,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import { db } from "../../firebaseConfig";
+import { alertConfigType } from "../types/types";
+
+export const joinServer = async (
+  code: string,
+  uid: string,
+  isServerPrivate: React.Dispatch<
+    React.SetStateAction<boolean>
+  >,
+  password: string,
+  setAlertConfig: React.Dispatch<
+    React.SetStateAction<alertConfigType>
+  >,
+  goBack: () => void
+) => {
+  const docRef = doc(db, "servers", code);
+  const userRef = doc(db, uid, code);
+  const userSnap = await getDoc(userRef);
+  const docSnap = await getDoc(docRef);
+  if (userSnap.exists()) {
+    setAlertConfig({
+      alert: true,
+      error: "You have already joined this server",
+    });
+    return;
+  }
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    if (data.type === "Private") {
+      isServerPrivate(true);
+      if (password.trim().length === 0) {
+        setAlertConfig({
+          alert: true,
+          error:
+            "This server is private. You have to enter a password",
+        });
+      } else if (password !== data.password) {
+        setAlertConfig({
+          alert: true,
+          error: "Your Password is incorrect",
+        });
+      } else {
+        await setDoc(doc(db, uid, code), {
+          createdAt: serverTimestamp(),
+          uid,
+          code,
+        });
+        goBack();
+      }
+    } else {
+      await setDoc(doc(db, uid, code), {
+        createdAt: serverTimestamp(),
+        uid,
+        code,
+      });
+      goBack();
+    }
+  } else {
+    setAlertConfig({
+      alert: true,
+      error: "Your server code is invalid",
+    });
+  }
+};

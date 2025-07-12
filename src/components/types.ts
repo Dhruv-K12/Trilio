@@ -22,3 +22,10 @@ export type labelInputProps = {
   multiline?: boolean;
   length: number;
 };
+
+export type serversProps = {
+  uri: string;
+  title: string;
+  des: string;
+  code: string;
+};

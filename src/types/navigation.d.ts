@@ -10,6 +10,12 @@ export type routeMainStackParamList = {
   Home: undefined;
   CreateServer: undefined;
   JoinServer: undefined;
+  ChatScreen: {
+    name: string;
+    code: string;
+    des: string;
+    uri: string;
+  };
 };
 
 export type naviagationProp =
