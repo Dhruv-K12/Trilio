@@ -7,12 +7,15 @@ import {
 import React, { useEffect } from "react";
 import { useAuthCtx } from "../context/AuthContext";
 import { colors } from "../constants/colors";
+import * as Haptics from "expo-haptics";
 import {
   Gesture,
   GestureDetector,
 } from "react-native-gesture-handler";
 import Animated, {
+  BounceInRight,
   FadeIn,
+  FadeInRight,
   FadeInUp,
   interpolate,
   interpolateColor,
@@ -47,6 +50,7 @@ const Message = ({
   const scaleMsgContainer = useSharedValue(0);
   const isSender = item.senderId === user?.uid;
   const deleteBtnHandler = (state: boolean) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     showDeleteBtn(state);
   };
   const msgsSelectionHandler = (
@@ -137,7 +141,7 @@ const Message = ({
   }, [reset]);
   return (
     <Animated.View
-      entering={FadeInUp}
+      entering={FadeInRight}
       style={[containerStyle]}
     >
       <Animated.View

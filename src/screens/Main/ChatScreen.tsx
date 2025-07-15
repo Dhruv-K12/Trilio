@@ -2,7 +2,6 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -27,9 +26,6 @@ import Message from "../../components/Message";
 import * as Clipboard from "expo-clipboard";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useEvent,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
@@ -38,6 +34,8 @@ import { deleteMsg } from "../../api/deleteMsg";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { editMsg } from "../../api/editMsg";
+import * as Haptic from "expo-haptics";
+import { useAudioPlayer } from "expo-audio";
 const ChatScreen = ({ route }: any) => {
   const { uri, code, name } = route.params;
   const { user } = useAuthCtx();
@@ -46,7 +44,7 @@ const ChatScreen = ({ route }: any) => {
     useRef<Animated.FlatList<string[]>>(null);
   const selectCount = useSharedValue(0);
   const msgContainer = useSharedValue(0);
-  const scaleUp = useSharedValue(0);
+
   const [selectAll, isAllSelected] = useState(false);
   const [msg, setMsg] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
@@ -54,6 +52,10 @@ const ChatScreen = ({ route }: any) => {
   const [reset, isReset] = useState(false);
   const [selectedMsgs, isMsgsSelected] = useState<any[]>(
     []
+  );
+  const inputRef = useRef<TextInput>(null);
+  const sound = useAudioPlayer(
+    require("../../../assets/Fart.mp3")
   );
   const [edit, isEdit] = useState(false);
   const handleScroll = () => {
@@ -78,9 +80,13 @@ const ChatScreen = ({ route }: any) => {
     }
   };
   const inputPressHandler = () => {};
+  const showKeyboard = () => {
+    inputRef.current?.focus();
+  };
   const editBtnHandler = () => {
     setMsg(selectedMsgs[0].msg);
     isEdit(true);
+    showKeyboard();
   };
   const selectMessageHandler = () => {
     isAllSelected((state) => {
@@ -104,6 +110,9 @@ const ChatScreen = ({ route }: any) => {
       user?.uid &&
       user.displayName
     ) {
+      Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Heavy);
+      sound.seekTo(0);
+      sound.play();
       if (edit) {
         isReset(true);
         isEdit(false);
@@ -127,17 +136,17 @@ const ChatScreen = ({ route }: any) => {
   useEffect(() => {
     getMsg(code, setMessages);
   }, []);
-
-  const messageContainer = useAnimatedStyle(() => {
-    return {
-      height: interpolate(scaleUp.value, [0, 1], [60, 140]),
-    };
-  });
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior="height"
+        style={{
+          flex: 1,
+          justifyContent: "flex-end",
+        }}
+        behavior={
+          Platform.OS === "android" ? "height" : "padding"
+        }
+        keyboardVerticalOffset={0}
       >
         <View style={styles.header}>
           <Ionicons
@@ -211,7 +220,6 @@ const ChatScreen = ({ route }: any) => {
             )}
           </View>
         </View>
-
         <Animated.FlatList
           ref={scrollRef}
           data={messages}
@@ -243,6 +251,7 @@ const ChatScreen = ({ route }: any) => {
               onChangeText={(txt) => setMsg(txt)}
               multiline
               onPress={inputPressHandler}
+              ref={inputRef}
             />
             <TouchableOpacity
               style={styles.msgSendContainer}
@@ -317,6 +326,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexDirection: "row",
     alignItems: "center",
+    padding: 12,
   },
   input: {
     width: "80%",
