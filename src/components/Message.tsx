@@ -1,5 +1,10 @@
-import { Image, StyleSheet, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  Easing,
+  Image,
+  StyleSheet,
+  Text,
+} from "react-native";
+import React, { useEffect } from "react";
 import { useAuthCtx } from "../context/AuthContext";
 import { colors } from "../constants/colors";
 import {
@@ -7,6 +12,8 @@ import {
   GestureDetector,
 } from "react-native-gesture-handler";
 import Animated, {
+  FadeIn,
+  FadeInUp,
   interpolate,
   interpolateColor,
   runOnJS,
@@ -17,43 +24,54 @@ import Animated, {
 } from "react-native-reanimated";
 const Message = ({
   item,
-  setReplyMsg,
   selectCount,
   selectAll,
   showDeleteBtn,
+  isMsgsSelected,
+  reset,
+  isReset,
 }: {
   item: any;
-  setReplyMsg: (msg: string) => void;
   selectCount: SharedValue<number>;
   selectAll: boolean;
+  reset: boolean;
   showDeleteBtn: React.Dispatch<
     React.SetStateAction<boolean>
   >;
+  isMsgsSelected: React.Dispatch<
+    React.SetStateAction<any[]>
+  >;
+  isReset: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const scaleMsgContainer = useSharedValue(0);
-  const showDeleteBtnHandler = () => {
-    showDeleteBtn(true);
-  };
-  const [selectItem, isSelectItem] = useState<any[]>([]);
-  console.log(selectItem);
-  const hideDeleteBtnHandler = () => {
-    showDeleteBtn(false);
-  };
-  useEffect(() => {
-    if (selectAll) {
-      scaleMsgContainer.value = withSpring(1);
-    } else {
-      scaleMsgContainer.value = withSpring(0);
-    }
-  }, [selectAll]);
   const { user } = useAuthCtx();
+  const scaleMsgContainer = useSharedValue(0);
   const isSender = item.senderId === user?.uid;
+  const deleteBtnHandler = (state: boolean) => {
+    showDeleteBtn(state);
+  };
+  const msgsSelectionHandler = (
+    type: "Add" | "Delete" | "Vanish"
+  ) => {
+    if (type === "Vanish") {
+      isMsgsSelected([]);
+    } else if (type === "Add") {
+      isMsgsSelected((msgs) => [...msgs, item]);
+    } else {
+      isMsgsSelected((msgs) =>
+        msgs.filter(
+          (msg) =>
+            msg.msg !== item.msg &&
+            msg.createdAt !== item.createdAt
+        )
+      );
+    }
+  };
   const holdTapGesture = Gesture.LongPress().onStart(() => {
     if (selectCount.value === 0) {
       scaleMsgContainer.value = withSpring(1);
-
       selectCount.value = 1;
-      runOnJS(showDeleteBtnHandler)();
+      runOnJS(deleteBtnHandler)(true);
+      runOnJS(msgsSelectionHandler)("Add");
     }
   });
   const clickGesture = Gesture.Tap().onStart(() => {
@@ -61,13 +79,16 @@ const Message = ({
       if (scaleMsgContainer.value > 0.5) {
         scaleMsgContainer.value = withSpring(0);
         selectCount.value -= 1;
+        runOnJS(msgsSelectionHandler)("Delete");
 
         if (selectCount.value == 0) {
-          runOnJS(hideDeleteBtnHandler)();
+          runOnJS(deleteBtnHandler)(false);
+          runOnJS(msgsSelectionHandler)("Vanish");
         }
       } else {
         scaleMsgContainer.value = withSpring(1);
         selectCount.value += 1;
+        runOnJS(msgsSelectionHandler)("Add");
       }
     }
   });
@@ -105,9 +126,20 @@ const Message = ({
       ),
     };
   });
-
+  useEffect(() => {
+    scaleMsgContainer.value = withSpring(selectAll ? 1 : 0);
+  }, [selectAll]);
+  useEffect(() => {
+    if (reset) {
+      scaleMsgContainer.value = withSpring(0);
+      isReset(false);
+    }
+  }, [reset]);
   return (
-    <Animated.View style={[containerStyle]}>
+    <Animated.View
+      entering={FadeInUp}
+      style={[containerStyle]}
+    >
       <Animated.View
         style={[
           isSender
@@ -118,7 +150,7 @@ const Message = ({
       >
         <Image
           source={
-            item.profileUri === null
+            !item.profileUri
               ? require("../../assets/Images/user-profile.png")
               : { uri: item.profileUri }
           }

@@ -2,6 +2,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -33,61 +34,93 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { deleteMsg } from "../../api/deleteMsg";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { editMsg } from "../../api/editMsg";
 const ChatScreen = ({ route }: any) => {
   const { uri, code, name } = route.params;
-  const { user, setAlertConfig } = useAuthCtx();
-  const [replyMsg, setReplyMsg] = useState("");
+  const { user } = useAuthCtx();
   const navigation = useNavigation<naviagationProp>();
-  const selectCount = useSharedValue(0);
-  const [selectAll, isAllSelected] = useState(false);
-  const msgContainer = useSharedValue(0);
-  const goBack = () => {
-    navigation.goBack();
-  };
-  const scaleUp = useSharedValue(0);
   const scrollRef =
     useRef<Animated.FlatList<string[]>>(null);
+  const selectCount = useSharedValue(0);
+  const msgContainer = useSharedValue(0);
+  const scaleUp = useSharedValue(0);
+  const [selectAll, isAllSelected] = useState(false);
   const [msg, setMsg] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const [deleteBtn, showDeleteBtn] = useState(false);
+  const [reset, isReset] = useState(false);
+  const [selectedMsgs, isMsgsSelected] = useState<any[]>(
+    []
+  );
+  const [edit, isEdit] = useState(false);
   const handleScroll = () => {
     scrollRef.current?.scrollToIndex({
       index: messages.length - 1,
       animated: true,
     });
   };
-
+  const goBack = () => {
+    navigation.goBack();
+  };
   const copyToCliboard = () => {
     Clipboard.setStringAsync(code);
     ToastAndroid.show("Copied", ToastAndroid.SHORT);
+  };
+  const deleteMsgHandler = () => {
+    if (selectedMsgs.length !== 0) {
+      showDeleteBtn(false);
+      selectCount.value = 0;
+      deleteMsg(selectedMsgs, code);
+      isMsgsSelected([]);
+    }
+  };
+  const inputPressHandler = () => {};
+  const editBtnHandler = () => {
+    setMsg(selectedMsgs[0].msg);
+    isEdit(true);
   };
   const selectMessageHandler = () => {
     isAllSelected((state) => {
       if (state) {
         selectCount.value = 0;
         showDeleteBtn(false);
+        isMsgsSelected([]);
       } else {
         selectCount.value = messages.length;
+        isMsgsSelected(messages);
       }
       return !state;
     });
   };
-  const validateMsg = () => {
-    handleScroll();
+  const validateMsg = async () => {
+    if (messages.length !== 0) {
+      handleScroll();
+    }
     if (
       msg.trim().length !== 0 &&
       user?.uid &&
       user.displayName
     ) {
-      sendMsg(
-        msg,
-        code,
-        user.uid,
-        user.displayName,
-        user.photoURL
-      );
-      msgContainer.value = withSpring(1);
-
+      if (edit) {
+        isReset(true);
+        isEdit(false);
+        selectCount.value = 0;
+        showDeleteBtn(false);
+        editMsg(msg, selectedMsgs, code);
+        isMsgsSelected([]);
+      } else {
+        sendMsg(
+          msg,
+          code,
+          user.uid,
+          user.displayName,
+          user.photoURL
+        );
+        msgContainer.value = withSpring(1);
+      }
       setMsg("");
     }
   };
@@ -103,13 +136,8 @@ const ChatScreen = ({ route }: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        behavior={
-          Platform.OS === "ios" ? "padding" : "height"
-        }
-        keyboardVerticalOffset={
-          Platform.OS === "ios" ? 100 : 0
-        }
         style={{ flex: 1 }}
+        behavior="height"
       >
         <View style={styles.header}>
           <Ionicons
@@ -144,9 +172,19 @@ const ChatScreen = ({ route }: any) => {
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  width: "20%",
+                  width:
+                    selectCount.value == 1 ? "30%" : "20%",
+                  padding: 4,
                 }}
               >
+                {selectCount.value == 1 && (
+                  <MaterialIcons
+                    onPress={editBtnHandler}
+                    name="edit"
+                    size={24}
+                    color={colors.secondary}
+                  />
+                )}
                 <FontAwesome5
                   name="check-double"
                   size={24}
@@ -161,6 +199,7 @@ const ChatScreen = ({ route }: any) => {
                   name="delete"
                   size={24}
                   color={colors.secondary}
+                  onPress={deleteMsgHandler}
                 />
               </View>
             ) : (
@@ -172,28 +211,26 @@ const ChatScreen = ({ route }: any) => {
             )}
           </View>
         </View>
+
         <Animated.FlatList
-          style={{ flex: 1 }}
           ref={scrollRef}
           data={messages}
           renderItem={({ item }) => (
             <Message
               item={item}
-              setReplyMsg={setReplyMsg}
               selectCount={selectCount}
               selectAll={selectAll}
               showDeleteBtn={showDeleteBtn}
+              isMsgsSelected={isMsgsSelected}
+              reset={reset}
+              isReset={isReset}
             />
           )}
           contentContainerStyle={{ flexGrow: 1 }}
           scrollEventThrottle={16}
         />
-        <Animated.View
-          style={[
-            styles.messageContainer,
-            messageContainer,
-          ]}
-        >
+
+        <Animated.View style={[styles.messageContainer]}>
           <Animated.View style={[styles.inputContainer]}>
             <FontAwesome6
               name="add"
@@ -205,13 +242,25 @@ const ChatScreen = ({ route }: any) => {
               value={msg}
               onChangeText={(txt) => setMsg(txt)}
               multiline
+              onPress={inputPressHandler}
             />
-            <TouchableOpacity onPress={validateMsg}>
-              <Ionicons
-                name="send-outline"
-                size={24}
-                color="black"
-              />
+            <TouchableOpacity
+              style={styles.msgSendContainer}
+              onPress={validateMsg}
+            >
+              {edit ? (
+                <AntDesign
+                  name="check"
+                  size={24}
+                  color="black"
+                />
+              ) : (
+                <Ionicons
+                  name="send-outline"
+                  size={24}
+                  color={colors.secondary}
+                />
+              )}
             </TouchableOpacity>
           </Animated.View>
         </Animated.View>
@@ -258,7 +307,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 60,
     justifyContent: "center",
-    alignSelf: "flex-end",
   },
   inputContainer: {
     width: "90%",
@@ -280,5 +328,13 @@ const styles = StyleSheet.create({
   },
   copyToClipboardBtn: {
     flexDirection: "row",
+  },
+  msgSendContainer: {
+    backgroundColor: colors.primary,
+    width: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+    height: 40,
   },
 });

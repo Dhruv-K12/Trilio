@@ -41,7 +41,6 @@ export const validateServer = (
       error: "Please Enter Your Password",
     });
   } else {
-    console.log(password);
     createServer(
       serverName,
       serverDes,

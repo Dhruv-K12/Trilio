@@ -48,7 +48,6 @@ export const createServer = async (
   } else {
     setLoading(true);
     const url: string = await uploadImage(image);
-    console.log(password);
     const serverDetails = {
       createdAt: serverTimestamp(),
       uid,
@@ -69,7 +68,6 @@ export const createServer = async (
     uid,
     code,
   });
-
   setLoading(false);
   isServerCreated(true);
 };
