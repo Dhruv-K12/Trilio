@@ -6,20 +6,24 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
-import { alertConfigType } from "../types/types";
+import {
+  alertConfigType,
+  booleanState,
+} from "../types/types";
+import { joinMember } from "./joinMember";
+import { User } from "firebase/auth";
 
 export const joinServer = async (
   code: string,
-  uid: string,
-  isServerPrivate: React.Dispatch<
-    React.SetStateAction<boolean>
-  >,
+  user: User,
+  isServerPrivate: booleanState,
   password: string,
   setAlertConfig: React.Dispatch<
     React.SetStateAction<alertConfigType>
   >,
   goBack: () => void
 ) => {
+  const { uid, displayName, photoURL } = user;
   const docRef = doc(db, "servers", code);
   const userRef = doc(db, uid, code);
   const userSnap = await getDoc(userRef);
@@ -52,6 +56,7 @@ export const joinServer = async (
           uid,
           code,
         });
+        joinMember(code, user);
         goBack();
       }
     } else {
@@ -60,6 +65,7 @@ export const joinServer = async (
         uid,
         code,
       });
+      joinMember(code, user);
       goBack();
     }
   } else {

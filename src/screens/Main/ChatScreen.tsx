@@ -36,6 +36,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { editMsg } from "../../api/editMsg";
 import * as Haptic from "expo-haptics";
 import { useAudioPlayer } from "expo-audio";
+import { getSavedMessage } from "../../storage/getMessage";
 const ChatScreen = ({ route }: any) => {
   const { uri, code, name } = route.params;
   const { user } = useAuthCtx();
@@ -67,8 +68,8 @@ const ChatScreen = ({ route }: any) => {
   const goBack = () => {
     navigation.goBack();
   };
-  const copyToCliboard = () => {
-    Clipboard.setStringAsync(code);
+  const copyToCliboard = (text: string) => {
+    Clipboard.setStringAsync(text);
     ToastAndroid.show("Copied", ToastAndroid.SHORT);
   };
   const deleteMsgHandler = () => {
@@ -77,6 +78,8 @@ const ChatScreen = ({ route }: any) => {
       selectCount.value = 0;
       deleteMsg(selectedMsgs, code);
       isMsgsSelected([]);
+      isReset(true);
+      isAllSelected(false);
     }
   };
   const inputPressHandler = () => {};
@@ -134,6 +137,7 @@ const ChatScreen = ({ route }: any) => {
     }
   };
   useEffect(() => {
+    getSavedMessage(setMessages);
     getMsg(code, setMessages);
   }, []);
   return (
@@ -155,15 +159,25 @@ const ChatScreen = ({ route }: any) => {
             size={24}
             color={colors.secondary}
           />
-          <View style={styles.profileContainer}>
-            <Image
-              source={{ uri: uri }}
-              style={styles.profile}
-            />
+          <View style={[styles.profileContainer]}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("MemberScreen", {
+                  code,
+                  uri,
+                  name,
+                })
+              }
+            >
+              <Image
+                source={{ uri: uri }}
+                style={styles.profile}
+              />
+            </TouchableOpacity>
             <View>
               <Text style={styles.title}>{name}</Text>
               <TouchableOpacity
-                onPress={copyToCliboard}
+                onPress={() => copyToCliboard(code)}
                 style={styles.copyToClipboardBtn}
               >
                 <Ionicons
@@ -182,17 +196,27 @@ const ChatScreen = ({ route }: any) => {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   width:
-                    selectCount.value == 1 ? "30%" : "20%",
-                  padding: 4,
+                    selectCount.value == 1 ? "40%" : "25%",
+                  padding: 12,
                 }}
               >
                 {selectCount.value == 1 && (
-                  <MaterialIcons
-                    onPress={editBtnHandler}
-                    name="edit"
-                    size={24}
-                    color={colors.secondary}
-                  />
+                  <>
+                    <Ionicons
+                      onPress={() =>
+                        copyToCliboard(selectedMsgs[0].msg)
+                      }
+                      name="copy-sharp"
+                      size={24}
+                      color={colors.secondary}
+                    />
+                    <MaterialIcons
+                      onPress={editBtnHandler}
+                      name="edit"
+                      size={24}
+                      color={colors.secondary}
+                    />
+                  </>
                 )}
                 <FontAwesome5
                   name="check-double"
@@ -237,7 +261,6 @@ const ChatScreen = ({ route }: any) => {
           contentContainerStyle={{ flexGrow: 1 }}
           scrollEventThrottle={16}
         />
-
         <Animated.View style={[styles.messageContainer]}>
           <Animated.View style={[styles.inputContainer]}>
             <FontAwesome6

@@ -24,7 +24,7 @@ const JoinServer = () => {
     if (user) {
       joinServer(
         serverCode.toUpperCase(),
-        user.uid,
+        user,
         isServerPrivate,
         password,
         setAlertConfig,

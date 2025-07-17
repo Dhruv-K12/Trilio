@@ -1,11 +1,5 @@
-import {
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 import LottieView from "lottie-react-native";
 

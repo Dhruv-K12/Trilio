@@ -18,6 +18,7 @@ const Servers = ({
   title,
   des,
   code,
+  profile = false,
 }: serversProps) => {
   const navigation = useNavigation<naviagationProp>();
   const navigate = () => {
@@ -31,6 +32,7 @@ const Servers = ({
   return (
     <TouchableOpacity
       onPress={navigate}
+      disabled={profile}
       style={styles.container}
     >
       <View>

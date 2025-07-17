@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     right: 1,
-    bottom: 10,
+    bottom: 50,
   },
   floatBtn: {
     width: 60,

@@ -42,8 +42,7 @@ const CreateServer = () => {
         serverName,
         serverDes,
         option,
-        user.uid,
-        user.displayName,
+        user,
         image,
         setLoading,
         setAlertConfig,
@@ -95,7 +94,7 @@ const CreateServer = () => {
               onPress={pickImage}
               style={styles.userProfileContainer}
             >
-              {image === null ? (
+              {!image ? (
                 <>
                   <FontAwesome
                     name="user"

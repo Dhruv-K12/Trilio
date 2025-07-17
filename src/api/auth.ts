@@ -3,15 +3,19 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "../../firebaseConfig";
-import { alertConfigType } from "../types/types";
+import { auth, db } from "../../firebaseConfig";
+import {
+  alertConfigType,
+  booleanState,
+} from "../types/types";
+import { doc, setDoc } from "firebase/firestore";
 const signUpHandler = async (
   email: string,
   password: string,
   setAlertConfig: React.Dispatch<
     React.SetStateAction<alertConfigType>
   >,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setLoading: booleanState,
   name: string
 ) => {
   try {
@@ -24,6 +28,11 @@ const signUpHandler = async (
       name.charAt(0).toUpperCase() + name.slice(1);
     await updateProfile(response.user, {
       displayName: formattedName,
+    });
+
+    await setDoc(doc(db, "profile", response.user.uid), {
+      displayName: formattedName,
+      lastSeen: null,
     });
     setLoading(false);
   } catch (e: any) {

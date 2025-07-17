@@ -16,6 +16,8 @@ export type routeMainStackParamList = {
     des: string;
     uri: string;
   };
+  Setting: undefined;
+  MemberScreen: { code: string; uri: string; name: string };
 };
 
 export type naviagationProp =

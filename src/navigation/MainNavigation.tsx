@@ -10,6 +10,8 @@ import * as SplashScreen from "expo-splash-screen";
 import Alert from "../components/Alert";
 import { getServer } from "../api/getServer";
 import { useMainCtx } from "../context/MainContext";
+import { getSavedServer } from "../storage/getServer";
+import { getMembers } from "../api/getMembers";
 SplashScreen.preventAutoHideAsync();
 const MainNavigation = () => {
   const [loading, setLoading] = useState(true);
@@ -19,6 +21,7 @@ const MainNavigation = () => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
+        getSavedServer(setServers);
         getServer(user.uid, setServers);
       }
       SplashScreen.hide();

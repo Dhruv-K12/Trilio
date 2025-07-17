@@ -6,6 +6,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import { saveMessage } from "../storage/saveMessage";
 
 export const getMsg = (
   code: string,
@@ -20,6 +21,7 @@ export const getMsg = (
       const messages = querySnapshot.docs.map((each) =>
         each.data()
       );
+      saveMessage(messages);
       setMessages(messages);
     }
   );

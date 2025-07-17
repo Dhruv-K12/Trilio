@@ -1,3 +1,4 @@
+import { User } from "firebase/auth";
 import { createServer } from "../api/createServer";
 import { alertConfigType } from "../types/types";
 
@@ -5,8 +6,7 @@ export const validateServer = (
   serverName: string,
   serverDes: string,
   option: "Public" | "Private",
-  uid: string,
-  name: string,
+  user: User,
   image: string | null,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setAlertConfig: React.Dispatch<
@@ -45,8 +45,7 @@ export const validateServer = (
       serverName,
       serverDes,
       option,
-      uid,
-      name,
+      user,
       image,
       setLoading,
       isServerCreated,

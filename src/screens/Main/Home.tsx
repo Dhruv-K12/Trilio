@@ -10,21 +10,32 @@ import { colors } from "../../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fonts } from "../../constants/fonts";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+
 import { ms } from "react-native-size-matters";
 import SwipeableBtn from "../../components/SwipeableBtn";
 import { useAuthCtx } from "../../context/AuthContext";
 import ChatFloatingBtn from "../../components/ChatFloatingBtn";
 import Servers from "../../components/Servers";
 import { useMainCtx } from "../../context/MainContext";
-import Feather from "@expo/vector-icons/Feather";
+
+import { useNavigation } from "@react-navigation/native";
+import { naviagationProp } from "../../types/navigation";
+import { setLastActive } from "../../api/setLastActive";
 const Home = () => {
   const [option, setOptions] = useState<
     "All" | "Favourites"
   >("All");
   const { user } = useAuthCtx();
   const { servers } = useMainCtx();
-
+  const navigation = useNavigation<naviagationProp>();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (user?.uid) {
+        setLastActive(user.uid);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -44,7 +55,10 @@ const Home = () => {
               color={colors.secondary}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.settingContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Setting")}
+            style={styles.settingContainer}
+          >
             <Ionicons
               name="settings-outline"
               size={24}

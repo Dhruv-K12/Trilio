@@ -1,4 +1,5 @@
 import { User } from "firebase/auth";
+import React from "react";
 import { TouchableOpacityProps, View } from "react-native";
 import { AnimatedProps } from "react-native-reanimated";
 
@@ -27,3 +28,6 @@ export type mainCtxType = {
   servers: any[];
   setServers: React.Dispatch<React.SetStateAction<any[]>>;
 };
+export type booleanState = React.Dispatch<
+  React.SetStateAction<boolean>
+>;

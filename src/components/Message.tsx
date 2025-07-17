@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Text,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthCtx } from "../context/AuthContext";
 import { colors } from "../constants/colors";
 import * as Haptics from "expo-haptics";
@@ -13,18 +13,16 @@ import {
   GestureDetector,
 } from "react-native-gesture-handler";
 import Animated, {
-  BounceInRight,
-  FadeIn,
   FadeInRight,
-  FadeInUp,
   interpolate,
   interpolateColor,
   runOnJS,
-  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { messagesProps } from "./types";
+import EmojiPicker from "./EmojiPicker";
 const Message = ({
   item,
   selectCount,
@@ -33,19 +31,7 @@ const Message = ({
   isMsgsSelected,
   reset,
   isReset,
-}: {
-  item: any;
-  selectCount: SharedValue<number>;
-  selectAll: boolean;
-  reset: boolean;
-  showDeleteBtn: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
-  isMsgsSelected: React.Dispatch<
-    React.SetStateAction<any[]>
-  >;
-  isReset: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+}: messagesProps) => {
   const { user } = useAuthCtx();
   const scaleMsgContainer = useSharedValue(0);
   const isSender = item.senderId === user?.uid;
@@ -53,6 +39,7 @@ const Message = ({
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     showDeleteBtn(state);
   };
+
   const msgsSelectionHandler = (
     type: "Add" | "Delete" | "Vanish"
   ) => {
@@ -158,7 +145,11 @@ const Message = ({
               ? require("../../assets/Images/user-profile.png")
               : { uri: item.profileUri }
           }
-          style={{ width: 40, height: 40 }}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+          }}
         />
         <GestureDetector gesture={clickAndHoldGesture}>
           <Animated.View

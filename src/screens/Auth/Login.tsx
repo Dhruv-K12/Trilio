@@ -1,6 +1,7 @@
 import {
   Image,
   KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -38,6 +39,7 @@ const Login = () => {
           Enter your email and password to continue
         </Text>
       </View>
+
       <Input
         placeholder="Enter Your Email Here"
         onChangeText={setEmail}

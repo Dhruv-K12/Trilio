@@ -6,6 +6,9 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { uploadImage } from "./uploadImage";
+import { booleanState } from "../types/types";
+import { joinMember } from "./joinMember";
+import { User } from "firebase/auth";
 
 const genrateServerCode = () => {
   let code = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -21,15 +24,13 @@ export const createServer = async (
   serverName: string,
   des: string,
   type: "Public" | "Private",
-  uid: string,
-  name: string,
+  user: User,
   image: string,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  isServerCreated: React.Dispatch<
-    React.SetStateAction<boolean>
-  >,
+  setLoading: booleanState,
+  isServerCreated: booleanState,
   password: string
 ) => {
+  const { uid, displayName, photoURL } = user;
   const code = genrateServerCode();
   const docRef = doc(db, "servers", code);
   const docSnap = await getDoc(docRef);
@@ -38,8 +39,7 @@ export const createServer = async (
       serverName,
       des,
       type,
-      uid,
-      name,
+      user,
       image,
       setLoading,
       isServerCreated,
@@ -48,6 +48,7 @@ export const createServer = async (
   } else {
     setLoading(true);
     const url: string = await uploadImage(image);
+
     const serverDetails = {
       createdAt: serverTimestamp(),
       uid,
@@ -68,6 +69,7 @@ export const createServer = async (
     uid,
     code,
   });
+  joinMember(code, user);
   setLoading(false);
   isServerCreated(true);
 };
