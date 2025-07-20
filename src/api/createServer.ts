@@ -30,46 +30,50 @@ export const createServer = async (
   isServerCreated: booleanState,
   password: string
 ) => {
-  const { uid, displayName, photoURL } = user;
+  const { uid } = user;
   const code = genrateServerCode();
   const docRef = doc(db, "servers", code);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    createServer(
-      serverName,
-      des,
-      type,
-      user,
-      image,
-      setLoading,
-      isServerCreated,
-      password
-    );
-  } else {
-    setLoading(true);
-    const url: string = await uploadImage(image);
+  try {
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      createServer(
+        serverName,
+        des,
+        type,
+        user,
+        image,
+        setLoading,
+        isServerCreated,
+        password
+      );
+    } else {
+      setLoading(true);
+      const url: string = await uploadImage(image);
+      const serverDetails = {
+        createdAt: serverTimestamp(),
+        uid,
+        des,
+        name: serverName,
+        url,
+        type,
+        code,
+        password,
+      };
 
-    const serverDetails = {
+      await setDoc(docRef, {
+        ...serverDetails,
+      });
+    }
+    await setDoc(doc(db, uid, code), {
       createdAt: serverTimestamp(),
       uid,
-      des,
-      name: serverName,
-      url,
-      type,
       code,
-      password,
-    };
-
-    await setDoc(docRef, {
-      ...serverDetails,
     });
+    joinMember(code, user);
+    isServerCreated(true);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    setLoading(false);
   }
-  await setDoc(doc(db, uid, code), {
-    createdAt: serverTimestamp(),
-    uid,
-    code,
-  });
-  joinMember(code, user);
-  setLoading(false);
-  isServerCreated(true);
 };

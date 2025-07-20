@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { colors } from "../constants/colors";
 import { useMainCtx } from "../context/MainContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -18,10 +18,10 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/native";
-import { naviagationProp } from "../types/navigation";
+import { navigationMainProp } from "../types/navigation";
 
 const ChatFloatingBtn = () => {
-  const navigation = useNavigation<naviagationProp>();
+  const navigation = useNavigation<navigationMainProp>();
   const { TouchableAnimated } = useMainCtx();
   const optionAnimated = useSharedValue(0);
   const optionStyle = useAnimatedStyle(() => {

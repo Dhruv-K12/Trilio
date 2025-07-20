@@ -5,16 +5,14 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../../firebaseConfig";
 import {
-  alertConfigType,
+  alertConfigState,
   booleanState,
 } from "../types/types";
 import { doc, setDoc } from "firebase/firestore";
 const signUpHandler = async (
   email: string,
   password: string,
-  setAlertConfig: React.Dispatch<
-    React.SetStateAction<alertConfigType>
-  >,
+  setAlertConfig: alertConfigState,
   setLoading: booleanState,
   name: string
 ) => {
@@ -29,7 +27,6 @@ const signUpHandler = async (
     await updateProfile(response.user, {
       displayName: formattedName,
     });
-
     await setDoc(doc(db, "profile", response.user.uid), {
       displayName: formattedName,
       lastSeen: null,
@@ -45,13 +42,12 @@ const signUpHandler = async (
     setLoading(false);
   }
 };
+
 const loginHandler = async (
   email: string,
   password: string,
-  setAlertConfig: React.Dispatch<
-    React.SetStateAction<alertConfigType>
-  >,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setAlertConfig: alertConfigState,
+  setLoading: booleanState
 ) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);

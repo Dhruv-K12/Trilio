@@ -1,13 +1,14 @@
 import { loginHandler, signUpHandler } from "../api/auth";
-import { alertConfigType } from "../types/types";
+import {
+  alertConfigState,
+  booleanState,
+} from "../types/types";
 
 export const validateAuth = (
   email: string,
   password: string,
-  setAlertConfig: React.Dispatch<
-    React.SetStateAction<alertConfigType>
-  >,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setAlertConfig: alertConfigState,
+  setLoading: booleanState,
   name?: string
 ) => {
   const emailRegex =

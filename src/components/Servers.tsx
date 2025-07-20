@@ -10,8 +10,7 @@ import { serversProps } from "./types";
 import { fonts } from "../constants/fonts";
 import { colors } from "../constants/colors";
 import { useNavigation } from "@react-navigation/native";
-import { navigationProps } from "../screens/Auth/types";
-import { naviagationProp } from "../types/navigation";
+import { navigationMainProp } from "../types/navigation";
 
 const Servers = ({
   uri,
@@ -20,7 +19,7 @@ const Servers = ({
   code,
   profile = false,
 }: serversProps) => {
-  const navigation = useNavigation<naviagationProp>();
+  const navigation = useNavigation<navigationMainProp>();
   const navigate = () => {
     navigation.navigate("ChatScreen", {
       name: title,

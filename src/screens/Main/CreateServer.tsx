@@ -24,7 +24,7 @@ import AuthBtn from "../../components/AuthBtn";
 import { validateServer } from "../../utils/validateServer";
 import Alert from "../../components/Alert";
 import { useNavigation } from "@react-navigation/native";
-import { naviagationProp } from "../../types/navigation";
+import { navigationMainProp } from "../../types/navigation";
 const CreateServer = () => {
   const [image, setImage] = useState<string | null>(null);
   const [serverName, setServerName] = useState("");
@@ -34,7 +34,7 @@ const CreateServer = () => {
   >("Public");
   const [password, setPassword] = useState("");
   const [serverCreated, isServerCreated] = useState(false);
-  const navigation = useNavigation<naviagationProp>();
+  const navigation = useNavigation<navigationMainProp>();
   const { user, setLoading, setAlertConfig } = useAuthCtx();
   const validateHandler = () => {
     if (user && user.displayName) {

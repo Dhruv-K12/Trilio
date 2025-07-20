@@ -10,28 +10,28 @@ import { colors } from "../../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fonts } from "../../constants/fonts";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
 import { ms } from "react-native-size-matters";
 import SwipeableBtn from "../../components/SwipeableBtn";
 import { useAuthCtx } from "../../context/AuthContext";
 import ChatFloatingBtn from "../../components/ChatFloatingBtn";
 import Servers from "../../components/Servers";
 import { useMainCtx } from "../../context/MainContext";
-
 import { useNavigation } from "@react-navigation/native";
-import { naviagationProp } from "../../types/navigation";
+import { navigationMainProp } from "../../types/navigation";
 import { setLastActive } from "../../api/setLastActive";
+
 const Home = () => {
   const [option, setOptions] = useState<
     "All" | "Favourites"
   >("All");
   const { user } = useAuthCtx();
   const { servers } = useMainCtx();
-  const navigation = useNavigation<naviagationProp>();
+  const navigation = useNavigation<navigationMainProp>();
   useEffect(() => {
     const interval = setInterval(() => {
-      if (user?.uid) {
+      if (user) {
         setLastActive(user.uid);
+        return;
       }
     }, 5000);
     return () => clearInterval(interval);

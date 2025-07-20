@@ -16,8 +16,10 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { fonts } from "../../constants/fonts";
 import { ms } from "react-native-size-matters";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
-import { naviagationProp } from "../../types/navigation";
+import {
+  RouteProp,
+  useNavigation,
+} from "@react-navigation/native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { sendMsg } from "../../api/sendMsg";
 import { useAuthCtx } from "../../context/AuthContext";
@@ -37,10 +39,21 @@ import { editMsg } from "../../api/editMsg";
 import * as Haptic from "expo-haptics";
 import { useAudioPlayer } from "expo-audio";
 import { getSavedMessage } from "../../storage/getMessage";
-const ChatScreen = ({ route }: any) => {
+import {
+  navigationMainProp,
+  routeMainStackParamList,
+} from "../../types/navigation";
+import { useMainCtx } from "../../context/MainContext";
+import { messagesType } from "../../types/types";
+const ChatScreen = ({
+  route,
+}: {
+  route: RouteProp<routeMainStackParamList, "ChatScreen">;
+}) => {
   const { uri, code, name } = route.params;
   const { user } = useAuthCtx();
-  const navigation = useNavigation<naviagationProp>();
+  const { goBack } = useMainCtx();
+  const navigation = useNavigation<navigationMainProp>();
   const scrollRef =
     useRef<Animated.FlatList<string[]>>(null);
   const selectCount = useSharedValue(0);
@@ -48,12 +61,15 @@ const ChatScreen = ({ route }: any) => {
 
   const [selectAll, isAllSelected] = useState(false);
   const [msg, setMsg] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
-  const [deleteBtn, showDeleteBtn] = useState(false);
-  const [reset, isReset] = useState(false);
-  const [selectedMsgs, isMsgsSelected] = useState<any[]>(
+  const [messages, setMessages] = useState<messagesType[]>(
     []
   );
+  const [deleteBtn, showDeleteBtn] = useState(false);
+  const [reset, isReset] = useState(false);
+  const [selectedMsgs, isMsgsSelected] = useState<
+    messagesType[]
+  >([]);
+
   const inputRef = useRef<TextInput>(null);
   const sound = useAudioPlayer(
     require("../../../assets/Fart.mp3")
@@ -64,9 +80,6 @@ const ChatScreen = ({ route }: any) => {
       index: messages.length - 1,
       animated: true,
     });
-  };
-  const goBack = () => {
-    navigation.goBack();
   };
   const copyToCliboard = (text: string) => {
     Clipboard.setStringAsync(text);
@@ -82,7 +95,6 @@ const ChatScreen = ({ route }: any) => {
       isAllSelected(false);
     }
   };
-  const inputPressHandler = () => {};
   const showKeyboard = () => {
     inputRef.current?.focus();
   };
@@ -273,7 +285,6 @@ const ChatScreen = ({ route }: any) => {
               value={msg}
               onChangeText={(txt) => setMsg(txt)}
               multiline
-              onPress={inputPressHandler}
               ref={inputRef}
             />
             <TouchableOpacity

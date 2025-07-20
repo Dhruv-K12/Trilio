@@ -7,8 +7,12 @@ export const joinMember = async (
   user: User
 ) => {
   const { uid } = user;
-  await setDoc(
-    doc(db, "servers", code, "members", uid),
-    {}
-  );
+  try {
+    await setDoc(
+      doc(db, "servers", code, "members", uid),
+      {}
+    );
+  } catch (e) {
+    console.log(e);
+  }
 };

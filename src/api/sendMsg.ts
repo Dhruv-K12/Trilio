@@ -12,14 +12,18 @@ export const sendMsg = async (
   name: string,
   profileUri: string | null
 ) => {
-  await addDoc(
-    collection(db, "servers", code, "messages"),
-    {
-      senderId: uid,
-      msg,
-      name,
-      profileUri,
-      createdAt: serverTimestamp(),
-    }
-  );
+  try {
+    await addDoc(
+      collection(db, "servers", code, "messages"),
+      {
+        senderId: uid,
+        msg,
+        name,
+        profileUri,
+        createdAt: serverTimestamp(),
+      }
+    );
+  } catch (e) {
+    console.log(e);
+  }
 };

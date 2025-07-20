@@ -2,7 +2,6 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
 import React, { useEffect } from "react";
@@ -10,7 +9,7 @@ import { buttonProps } from "./types";
 import { fonts } from "../constants/fonts";
 import { colors } from "../constants/colors";
 import { useAuthCtx } from "../context/AuthContext";
-import Animated, {
+import {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
@@ -65,7 +64,9 @@ const AuthBtn = ({
           color={colors.secondary}
         />
       ) : (
-        <Text style={styles.buttonText}>{text}</Text>
+        <Text style={[styles.buttonText, { color: color }]}>
+          {text}
+        </Text>
       )}
     </TouchableAnimated>
   );

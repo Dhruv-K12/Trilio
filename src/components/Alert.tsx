@@ -6,7 +6,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { useAuthCtx } from "../context/AuthContext";
 import { colors } from "../constants/colors";
 import Foundation from "@expo/vector-icons/Foundation";

@@ -1,7 +1,9 @@
 import { createContext, useContext, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import Animated from "react-native-reanimated";
-import { mainCtxType } from "../types/types";
+import { mainCtxType, servers } from "../types/types";
+import { useNavigation } from "@react-navigation/native";
+import { navigationMainProp } from "../types/navigation";
 
 const mainCtx = createContext<null | mainCtxType>(null);
 
@@ -12,11 +14,18 @@ export const MainCtxProvider = ({
 }) => {
   const TouchableAnimated =
     Animated.createAnimatedComponent(TouchableOpacity);
-  const [servers, setServers] = useState<string[]>([]);
+  const [servers, setServers] = useState<servers[]>([]);
+  const navigation = useNavigation<navigationMainProp>();
+  const goBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  };
   const value = {
     TouchableAnimated,
     servers,
     setServers,
+    goBack,
   };
   return (
     <mainCtx.Provider value={value}>

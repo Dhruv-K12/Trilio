@@ -2,11 +2,12 @@ import { StyleSheet, View } from "react-native";
 import React from "react";
 import { colors } from "../constants/colors";
 import LottieView from "lottie-react-native";
+import { booleanState } from "../types/types";
 
 const SplashScreens = ({
   setLoading,
 }: {
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoading: booleanState;
 }) => {
   return (
     <View style={styles.container}>

@@ -1,18 +1,16 @@
 import {
-  and,
   collection,
   doc,
   getDoc,
-  getDocs,
   onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { saveServer } from "../storage/saveServer";
+import { servers, serversState } from "../types/types";
 
 export const getServer = async (
   uid: string,
-  setServers: React.Dispatch<React.SetStateAction<any>>
+  setServers: serversState
 ) => {
   try {
     const unsub = onSnapshot(
@@ -26,11 +24,18 @@ export const getServer = async (
             const docSnap = await getDoc(
               doc(db, "servers", code)
             );
-            return docSnap.data();
+            if (docSnap.exists()) {
+              return docSnap.data() as servers;
+            }
+            return null;
           })
         ).then((servers) => {
-          saveServer(servers);
-          setServers(servers);
+          const validServers = servers.filter(
+            (server): server is servers => server !== null
+          );
+
+          saveServer(validServers);
+          setServers(validServers);
         });
       }
     );

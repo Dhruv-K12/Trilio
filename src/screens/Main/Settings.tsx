@@ -2,9 +2,7 @@ import {
   Image,
   Pressable,
   StyleSheet,
-  Text,
   ToastAndroid,
-  View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { colors } from "../../constants/colors";
@@ -12,17 +10,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import LabelInput from "../../components/LabelInput";
 import { useAuthCtx } from "../../context/AuthContext";
-import Button from "../../components/Button";
 import { updateProfile } from "firebase/auth";
-import { auth, db } from "../../../firebaseConfig";
+import { db } from "../../../firebaseConfig";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImage } from "../../api/uploadImage";
 import AuthBtn from "../../components/AuthBtn";
-import { useMainCtx } from "../../context/MainContext";
 import { doc, setDoc } from "firebase/firestore";
 const Settings = () => {
   const { user, setLoading } = useAuthCtx();
-
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
   const pickImage = async () => {

@@ -3,21 +3,29 @@ import {
   doc,
   getDoc,
   getDocs,
-  onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import { memberType } from "../types/types";
 
 export const getMembers = async (
   code: string,
-  setMembers: React.Dispatch<React.SetStateAction<any[]>>
+  setMembers: React.Dispatch<
+    React.SetStateAction<memberType[]>
+  >
 ) => {
   const docRef = collection(db, "servers", code, "members");
-  const docSnap = await getDocs(docRef);
-  const members = docSnap.docs.map(async (each) => {
-    const profile = await getDoc(
-      doc(db, "profile", each.id)
+  try {
+    const docSnap = await getDocs(docRef);
+    const members = await Promise.all(
+      docSnap.docs.map(async (each) => {
+        const profile = await getDoc(
+          doc(db, "profile", each.id)
+        );
+        return profile.data() as memberType;
+      })
     );
-    return profile.data();
-  });
-  Promise.all(members).then((member) => setMembers(member));
+    setMembers(members);
+  } catch (e) {
+    console.log(e);
+  }
 };

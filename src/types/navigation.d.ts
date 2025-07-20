@@ -20,5 +20,5 @@ export type routeMainStackParamList = {
   MemberScreen: { code: string; uri: string; name: string };
 };
 
-export type naviagationProp =
+export type navigationMainProp =
   NativeStackNavigationProp<routeMainStackParamList>;

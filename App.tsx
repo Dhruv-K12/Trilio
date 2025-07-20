@@ -23,15 +23,15 @@ export default function App() {
 
   return (
     <GestureHandlerRootView>
-      <AuthCtxProvider>
-        <MainCtxProvider>
-          <SafeAreaProvider style={{ flex: 1 }}>
-            <NavigationContainer>
+      <NavigationContainer>
+        <AuthCtxProvider>
+          <MainCtxProvider>
+            <SafeAreaProvider style={{ flex: 1 }}>
               <MainNavigation />
-            </NavigationContainer>
-          </SafeAreaProvider>
-        </MainCtxProvider>
-      </AuthCtxProvider>
+            </SafeAreaProvider>
+          </MainCtxProvider>
+        </AuthCtxProvider>
+      </NavigationContainer>
     </GestureHandlerRootView>
   );
 }

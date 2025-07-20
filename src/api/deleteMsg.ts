@@ -2,16 +2,16 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
+  DocumentData,
   getDocs,
   query,
   where,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
-import { ms } from "react-native-size-matters";
+import { messagesType } from "../types/types";
 
 export const deleteMsg = async (
-  msgs: any[],
+  msgs: messagesType[],
   code: string
 ) => {
   const docRef = collection(
@@ -20,18 +20,32 @@ export const deleteMsg = async (
     code,
     "messages"
   );
-  msgs.map(async (msg) => {
-    const q = query(
-      docRef,
-      where("msg", "==", msg.msg),
-      where("createdAt", "==", msg.createdAt)
+  try {
+    await Promise.all(
+      msgs.map(async (msg) => {
+        const q = query(
+          docRef,
+          where("msg", "==", msg.msg),
+          where("createdAt", "==", msg.createdAt)
+        );
+        const qSnap = await getDocs(q);
+        return Promise.all(
+          qSnap.docs.map(
+            async (each) =>
+              await deleteDoc(
+                doc(
+                  db,
+                  "servers",
+                  code,
+                  "messages",
+                  each.id
+                )
+              )
+          )
+        );
+      })
     );
-    const qSnap = await getDocs(q);
-    qSnap.docs.map(
-      async (each) =>
-        await deleteDoc(
-          doc(db, "servers", code, "messages", each.id)
-        )
-    );
-  });
+  } catch (e) {
+    console.log(e);
+  }
 };

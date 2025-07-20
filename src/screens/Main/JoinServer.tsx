@@ -8,18 +8,14 @@ import Button from "../../components/Button";
 import { joinServer } from "../../api/joinServer";
 import { useAuthCtx } from "../../context/AuthContext";
 import Alert from "../../components/Alert";
-import { useNavigation } from "@react-navigation/native";
-import { naviagationProp } from "../../types/navigation";
+import { useMainCtx } from "../../context/MainContext";
 
 const JoinServer = () => {
   const [serverCode, setServerCode] = useState("");
   const { user, setAlertConfig } = useAuthCtx();
+  const { goBack } = useMainCtx();
   const [password, setPassword] = useState("");
   const [privateServer, isServerPrivate] = useState(false);
-  const navigation = useNavigation<naviagationProp>();
-  const goBack = () => {
-    navigation.goBack();
-  };
   const joinServerHandler = () => {
     if (user) {
       joinServer(

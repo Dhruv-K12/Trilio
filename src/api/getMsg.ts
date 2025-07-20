@@ -3,26 +3,30 @@ import {
   onSnapshot,
   orderBy,
   query,
-  where,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { saveMessage } from "../storage/saveMessage";
+import { messageState, messagesType } from "../types/types";
 
 export const getMsg = (
   code: string,
-  setMessages: React.Dispatch<React.SetStateAction<any[]>>
+  setMessages: messageState
 ) => {
-  onSnapshot(
-    query(
-      collection(db, "servers", code, "messages"),
-      orderBy("createdAt", "asc")
-    ),
-    (querySnapshot) => {
-      const messages = querySnapshot.docs.map((each) =>
-        each.data()
-      );
-      saveMessage(messages);
-      setMessages(messages);
-    }
-  );
+  try {
+    onSnapshot(
+      query(
+        collection(db, "servers", code, "messages"),
+        orderBy("createdAt", "asc")
+      ),
+      (querySnapshot) => {
+        const messages = querySnapshot.docs.map(
+          (each) => each.data() as messagesType
+        );
+        saveMessage(messages);
+        setMessages(messages);
+      }
+    );
+  } catch (e) {
+    console.log(e);
+  }
 };

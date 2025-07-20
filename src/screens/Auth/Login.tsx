@@ -1,10 +1,7 @@
 import {
   Image,
-  KeyboardAvoidingView,
-  Platform,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import React, { useState } from "react";

@@ -1,4 +1,5 @@
 import { SharedValue } from "react-native-reanimated";
+import { booleanState } from "../types/types";
 
 export type buttonProps = {
   text: string;
@@ -37,11 +38,9 @@ export type messagesProps = {
   selectCount: SharedValue<number>;
   selectAll: boolean;
   reset: boolean;
-  showDeleteBtn: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
+  showDeleteBtn: booleanState;
   isMsgsSelected: React.Dispatch<
     React.SetStateAction<any[]>
   >;
-  isReset: React.Dispatch<React.SetStateAction<boolean>>;
+  isReset: booleanState;
 };

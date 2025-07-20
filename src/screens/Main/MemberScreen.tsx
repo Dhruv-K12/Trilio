@@ -16,17 +16,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { fonts } from "../../constants/fonts";
 import { ms } from "react-native-size-matters";
+import { memberType } from "../../types/types";
 const MemberScreen = ({
   route,
 }: {
-  route: RouteProp<routeMainStackParamList>;
+  route: RouteProp<routeMainStackParamList, "MemberScreen">;
 }) => {
-  const code = route.params?.code;
-  const name = route.params?.name;
-  const uri = route.params?.uri;
-
+  const { code, uri, name } = route.params;
   const [currDate, setCurrDate] = useState(new Date());
-  const [members, setMembers] = useState<any[]>([]);
+  const [members, setMembers] = useState<memberType[]>([]);
+
   useEffect(() => {
     let interval: any;
     if (code) {
@@ -39,7 +38,8 @@ const MemberScreen = ({
     return () => clearInterval(interval);
   }, []);
 
-  const showLastSeen = (lastSeen: any) => {
+  const showLastSeen = (last: any) => {
+    const lastSeen = last.toDate();
     if (
       lastSeen.getHours() === currDate.getHours() &&
       lastSeen.getMinutes() === currDate.getMinutes()
@@ -97,7 +97,7 @@ const MemberScreen = ({
           <Servers
             uri={item.uri}
             title={item.displayName}
-            des={showLastSeen(item.lastSeen.toDate())}
+            des={showLastSeen(item.lastSeen)}
             code=""
             profile
           />

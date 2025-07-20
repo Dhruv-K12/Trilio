@@ -1,10 +1,5 @@
-import {
-  Easing,
-  Image,
-  StyleSheet,
-  Text,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import { Image, StyleSheet, Text } from "react-native";
+import React, { useEffect } from "react";
 import { useAuthCtx } from "../context/AuthContext";
 import { colors } from "../constants/colors";
 import * as Haptics from "expo-haptics";
@@ -22,7 +17,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { messagesProps } from "./types";
-import EmojiPicker from "./EmojiPicker";
 const Message = ({
   item,
   selectCount,
